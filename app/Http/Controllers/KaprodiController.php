@@ -17,7 +17,7 @@ class KaprodiController extends Controller
 
         $query = Surat::with(['mahasiswa', 'jenisSurat', 'suratDetail'])
             ->whereHas('suratDetail', function ($q) {
-                $q->where('status', 'menunggu'); // ✅ Yang ditampilkan ke kaprodi
+                $q->where('status', 'diproses'); // ✅ Yang ditampilkan ke kaprodi
             });
 
 
@@ -35,7 +35,7 @@ class KaprodiController extends Controller
 
         $surats = $query->get();
 
-        return view('DashboardKaryawan', compact('surats', 'jenisSurats'));
+        return view('DashboardKaprodi', compact('surats', 'jenisSurats'));
     }
 
 
@@ -92,6 +92,6 @@ class KaprodiController extends Controller
 
         $jenisSurats = JenisSurat::all();
 
-        return view('karyawan.DaftarSurat', compact('surats', 'jenisSurats'));
+        return view('kaprodi.DaftarSurat', compact('surats', 'jenisSurats'));
     }
 }

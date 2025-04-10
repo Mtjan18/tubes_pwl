@@ -27,38 +27,52 @@ class LoginController extends Controller
             'nrp' => 'required|string',
             'password' => 'required|string',
         ]);
-    
+
         // Cari user berdasarkan NRP di tabel mahasiswa
         $mahasiswa = \App\Models\Mahasiswa::where('nrp', $credentials['nrp'])->first();
-    
+
         if (!$mahasiswa || !Auth::attempt(['id' => $mahasiswa->user_id, 'password' => $credentials['password']])) {
             return redirect()->back()
                 ->withInput($request->only('nrp'))
                 ->withErrors(['nrp' => 'NRP atau password salah.']);
         }
-    
-        return redirect('/DashboardMahasiswa'); // Redirect ke halaman mahasiswa
+
+        return redirect()->route('dashboard.mahasiswa');// Redirect ke halaman mahasiswa
     }
-    
+
     public function pegawaiLogin(Request $request)
     {
         $credentials = $request->validate([
             'nip' => 'required|string',
             'password' => 'required|string',
         ]);
-    
-        // Cari user berdasarkan NIP di tabel karyawan
+
         $karyawan = \App\Models\Karyawan::where('nip', $credentials['nip'])->first();
-    
-        if (!$karyawan || !Auth::attempt(['id' => $karyawan->user_id, 'password' => $credentials['password']])) {
+
+        if (!$karyawan) {
+            return redirect()->back()->withErrors(['nip' => 'NIP tidak ditemukan.']);
+        }
+
+        $user = $karyawan->user;
+
+        if (!Auth::attempt(['email' => $user->email, 'password' => $credentials['password']])) {
             return redirect()->back()
                 ->withInput($request->only('nip'))
-                ->withErrors(['nip' => 'NIP atau password salah.']);
+                ->withErrors(['nip' => 'Password salah.']);
         }
-    
-        return redirect('/DashboardKaryawan'); // Redirect ke halaman karyawan
+
+        // Cek role
+        if ($user->role->role_name === 'ketua_prodi') {
+            return redirect()->route('kaprodi.dashboard');
+        } elseif ($user->role->role_name === 'karyawan') {
+            return redirect()->route('karyawan.dashboard');
+        } else {
+            Auth::logout();
+            return redirect()->back()->withErrors(['nip' => 'Role tidak valid untuk login.']);
+        }
     }
-    
+
+
 
     // Logout
     public function logout(Request $request)
@@ -73,46 +87,4 @@ class LoginController extends Controller
         
 
 
-    // // Login untuk mahasiswa
-    // public function mahasiswaLogin(Request $request)
-    // {
-    //     $credentials = $request->validate([
-    //         'nrp' => 'required|string',
-    //         'password' => 'required|string',
-    //     ]);
-
-    //     if (Auth::attempt(['nrp' => $credentials['nrp'], 'password' => $credentials['password']])) {
-    //         return redirect('/index_mahasiswa');
-    //     }
-
-    //     return redirect()->back()
-    //         ->withInput($request->only('nrp'))
-    //         ->withErrors(['nrp' => 'NRP atau password salah.']);
-    // }
-
-    // // Login untuk karyawan
-    // public function pegawaiLogin(Request $request)
-    // {
-    //     $credentials = $request->validate([
-    //         'nip' => 'required|string',
-    //         'password' => 'required|string',
-    //     ]);
-
-    //     if (Auth::attempt(['nip' => $credentials['nip'], 'password' => $credentials['password']])) {
-    //         return redirect('/index');
-    //     }
-
-    //     return redirect()->back()
-    //         ->withInput($request->only('nip'))
-    //         ->withErrors(['nip' => 'NIP atau password salah.']);
-    // }
-
-    // // Handle logout
-    // public function logout(Request $request)
-    // {
-    //     Auth::logout();
-    //     $request->session()->invalidate();
-    //     $request->session()->regenerateToken();
-    //     return redirect('/login');
-    // }
-// }
+    

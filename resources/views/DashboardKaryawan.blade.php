@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('sidebar')
-    @include('layouts.sidebar-kaprodi')
+    @include('layouts.sidebar-karyawan')
 @endsection
 
 @section('content')
     <div class="container">
-        <h1 class="mb-4 text-black text-center">Dashboard Kaprodi</h1>
+        <h1 class="mb-4 text-black text-center">Dashboard Karyawan</h1>
 
         @if (session('status'))
             <div class="alert alert-success">
@@ -15,7 +15,7 @@
         @endif
 
         <!-- Filter Surat -->
-        <form method="GET" action="{{ route('kaprodi.dashboard') }}" class="mb-3">
+        <form method="GET" action="{{ route('karyawan.dashboard') }}" class="mb-3">
             <div class="row g-2 align-items-end">
                 <div class="col-md-4">
                     <label for="jenis_surat" class="form-label text-black">Filter Jenis Surat:</label>
@@ -132,7 +132,7 @@
 
 
 
-                        {{-- <!-- Modal Terima -->
+                        <!-- Modal Terima -->
                         <div class="modal fade" id="modalTerima{{ $surat->id }}" tabindex="-1"
                             aria-labelledby="modalTerimaLabel{{ $surat->id }}" aria-hidden="true">
                             <div class="modal-dialog">
@@ -186,7 +186,7 @@
                                     </div>
                                 </form>
                             </div>
-                        </div> --}}
+                        </div>
 
                     @empty
                         <tr>

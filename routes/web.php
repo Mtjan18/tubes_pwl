@@ -38,7 +38,7 @@ Route::middleware(['auth'])->prefix('mahasiswa')->group(function () {
 
     Route::get('/form-surat', function () {
         return view('mahasiswa.FormSurat');
-    })->name('formSurat');
+    })->name('Mahasiswa.FormSurat');
 
     // Surat pengajuan
     Route::post('/surat/aktif/store', [MhsAktifController::class, 'store'])->name('surat.aktif.store');
@@ -62,6 +62,7 @@ Route::middleware(['auth'])->prefix('karyawan')->group(function () {
 Route::middleware(['auth'])->prefix('kaprodi')->group(function () {
     Route::get('/dashboard', [KaprodiController::class, 'index'])->name('kaprodi.dashboard');
     Route::post('/validasi-surat/{id}', [KaprodiController::class, 'validasiSurat'])->name('kaprodi.validasiSurat');
+    Route::get('/daftar-surat', [KaprodiController::class, 'daftarSurat'])->name('kaprodi.daftarSurat');
 });
 
 // ========================
