@@ -17,7 +17,7 @@ class student
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) { // buat cek udh login atau belum
-            return redirect('/login');
+            return redirect()->route('login');
         }
         if (Auth::user()->role !== 'mahasiswa') {
             return redirect('/unauthenticated')->header('role', Auth::user()->role);

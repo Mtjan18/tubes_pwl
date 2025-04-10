@@ -16,7 +16,7 @@ class Karyawan extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'user_id', 'nip',
+        'user_id', 'nip','program_studi_id',
     ];
 
     public function user()

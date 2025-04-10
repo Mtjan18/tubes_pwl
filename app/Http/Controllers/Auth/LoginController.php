@@ -37,7 +37,7 @@ class LoginController extends Controller
                 ->withErrors(['nrp' => 'NRP atau password salah.']);
         }
     
-        return redirect('/index'); // Redirect ke halaman mahasiswa
+        return redirect('/DashboardMahasiswa'); // Redirect ke halaman mahasiswa
     }
     
     public function pegawaiLogin(Request $request)
@@ -56,7 +56,7 @@ class LoginController extends Controller
                 ->withErrors(['nip' => 'NIP atau password salah.']);
         }
     
-        return redirect('/index'); // Redirect ke halaman karyawan
+        return redirect('/DashboardKaryawan'); // Redirect ke halaman karyawan
     }
     
 
@@ -66,7 +66,7 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+        return redirect('/');
     }
 }
 

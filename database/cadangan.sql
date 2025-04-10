@@ -28,9 +28,8 @@ CREATE TABLE users (
 
 -- Tabel mahasiswa untuk menyimpan data mahasiswa
 CREATE TABLE mahasiswa (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    nrp VARCHAR(8) PRIMARY KEY,
     user_id INT UNIQUE NOT NULL,
-    nrp VARCHAR(50) UNIQUE NOT NULL,
     program_studi_id VARCHAR(10) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -40,9 +39,8 @@ CREATE TABLE mahasiswa (
 
 -- Tabel karyawan untuk menyimpan data karyawan dan ketua prodi
 CREATE TABLE karyawan (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    nip VARCHAR(8) PRIMARY KEY,
     user_id INT UNIQUE NOT NULL,
-    nip VARCHAR(50) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
@@ -61,19 +59,20 @@ CREATE TABLE surat (
     id INT AUTO_INCREMENT PRIMARY KEY,
     jenis_surat_id INT NOT NULL,
     nama VARCHAR(255) NOT NULL,
-    semester INT NULL,
-    keperluan TEXT NULL,
+    semester VARCHAR(9) NULL,
+    keperluan VARCHAR(255) NULL,
     ditujukan_ke VARCHAR(255) NULL,
     nama_matkul VARCHAR(255) NULL,
     data_mahasiswa TEXT NULL,
     topik VARCHAR(255) NULL,
-    tujuan_topik TEXT NULL,
+    tujuan_topik VARCHAR(255) NULL,
     tgl_lulus DATE NULL,
     user_id INT NOT NULL, -- Mahasiswa yang mengajukan surat
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (jenis_surat_id) REFERENCES jenis_surat(id)
+    
 );
 
 -- Tabel surat_detail untuk tracking status surat
@@ -81,7 +80,7 @@ CREATE TABLE surat_detail (
     id INT AUTO_INCREMENT PRIMARY KEY,
     surat_id INT NOT NULL,
     status VARCHAR(20) NOT NULL, -- Bisa diisi 'diproses', 'disetujui', 'ditolak'
-    alasan_penolakan TEXT NULL,
+    alasan_penolakan VARCHAR(255) NULL,
     approved_by INT NULL, -- ID Ketua Prodi yang menyetujui
     processed_by INT NULL, -- ID Karyawan yang memproses surat
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
