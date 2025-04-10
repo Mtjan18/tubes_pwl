@@ -7,22 +7,19 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
-class kaprodi
+class Kaprodi
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) { // buat cek udh login atau belum
-            return redirect('/login');
+        if (!Auth::check()) {
+            return redirect('/login/pegawai');
         }
-        if (Auth::user()->role !== 'kaprodi') {
-            return redirect('/unauthenticated')->header('role', Auth::user()->role);
-        } else {
-            return $next($request);
+        
+        // Periksa role_name dari relasi role
+        if (Auth::user()->role->role_name !== 'ketua_prodi') {
+            return redirect('/unauthenticated');
         }
+        
+        return $next($request);
     }
 }

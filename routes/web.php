@@ -31,7 +31,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // ========================
 // MAHASISWA ROUTES
 // ========================
-Route::middleware(['auth'])->prefix('mahasiswa')->group(function () {
+Route::middleware(['auth','student'])->prefix('mahasiswa')->group(function () {
     Route::get('/dashboard', function () {
         return view('DashboardMahasiswa');
     })->name('dashboard.mahasiswa');
@@ -50,7 +50,7 @@ Route::middleware(['auth'])->prefix('mahasiswa')->group(function () {
 // ========================
 // KARYAWAN ROUTES
 // ========================
-Route::middleware(['auth'])->prefix('karyawan')->group(function () {
+Route::middleware(['auth','staff'])->prefix('karyawan')->group(function () {
     Route::get('/dashboard', [KaryawanController::class, 'index'])->name('karyawan.dashboard');
     Route::post('/validasi-surat/{id}', [KaryawanController::class, 'validasiSurat'])->name('karyawan.validasiSurat');
     Route::get('/daftar-surat', [KaryawanController::class, 'daftarSurat'])->name('karyawan.daftarSurat');
@@ -59,7 +59,7 @@ Route::middleware(['auth'])->prefix('karyawan')->group(function () {
 // ========================
 // KAPRODI ROUTES
 // ========================
-Route::middleware(['auth'])->prefix('kaprodi')->group(function () {
+Route::middleware(['auth','kaprodi'])->prefix('kaprodi')->group(function () {
     Route::get('/dashboard', [KaprodiController::class, 'index'])->name('kaprodi.dashboard');
     Route::post('/validasi-surat/{id}', [KaprodiController::class, 'validasiSurat'])->name('kaprodi.validasiSurat');
     Route::get('/daftar-surat', [KaprodiController::class, 'daftarSurat'])->name('kaprodi.daftarSurat');

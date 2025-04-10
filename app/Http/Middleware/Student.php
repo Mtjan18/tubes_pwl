@@ -7,15 +7,15 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
-class Staff
+class Student
 {
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            return redirect('/login/pegawai');
+            return redirect('/login/mahasiswa');
         }
         
-        if (Auth::user()->role->role_name !== 'karyawan') {
+        if (Auth::user()->role->role_name !== 'mahasiswa') {
             return redirect('/unauthenticated');
         }
         
