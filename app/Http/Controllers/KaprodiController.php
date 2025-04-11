@@ -17,26 +17,30 @@ class KaprodiController extends Controller
 
         $query = Surat::with(['mahasiswa', 'jenisSurat', 'suratDetail'])
             ->whereHas('suratDetail', function ($q) {
-                $q->where('status', 'diproses'); // ✅ Yang ditampilkan ke kaprodi
+                $q->where('status', 'diproses'); 
             });
-
-
-        $surats = Surat::with(['jenisSurat', 'mahasiswa', 'suratDetail'])
-            ->when($request->jenis_surat, function ($query) use ($request) {
-                $query->where('jenis_surat_id', $request->jenis_surat);
-            })
-            ->orderBy('created_at', 'asc')
-            ->get();
-
 
         if ($request->filled('jenis_surat')) {
             $query->where('jenis_surat_id', $request->jenis_surat);
+        }
+
+        if ($request->filled('status')) {
+            $query->whereHas('suratDetail', function ($q) use ($request) {
+                $q->where('status', $request->status);
+            });
+        }
+
+        if ($request->filled('nrp')) {
+            $query->whereHas('mahasiswa', function ($q) use ($request) {
+                $q->where('nrp', 'like', '%' . $request->nrp . '%');
+            });
         }
 
         $surats = $query->get();
 
         return view('DashboardKaprodi', compact('surats', 'jenisSurats'));
     }
+
 
 
     public function validasiSurat(Request $request, $id)
@@ -51,21 +55,19 @@ class KaprodiController extends Controller
         if (!$suratDetail) {
             return redirect()->route('kaprodi.dashboard')->with('status', 'Data surat tidak ditemukan.');
         }
-        
-        // Validasi oleh kaprodi (mengubah status dari 'menunggu' ke 'disetujui' atau 'ditolak')
+
         $suratDetail->status = $request->status === 'tolak' ? 'ditolak' : 'disetujui';
         $suratDetail->approved_by = Auth::id(); // user_id kaprodi
-        
+
         if ($request->status === 'tolak') {
             $suratDetail->alasan_penolakan = $request->alasan ?? 'Tidak ada alasan yang diberikan';
         } else {
             $suratDetail->alasan_penolakan = null;
         }
-        
+
         $suratDetail->save();
-        
+
         return redirect()->route('kaprodi.dashboard')->with('status', 'Surat berhasil divalidasi.');
-        
     }
 
     public function daftarSurat(Request $request)

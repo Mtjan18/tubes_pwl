@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="container">
+    <div class="container-fluid">
         <h1 class="mb-4 text-black text-center">Daftar Surat yang Sudah Diproses</h1>
 
         <!-- Filter -->
@@ -43,12 +43,13 @@
         </form>
 
         <!-- Tabel Surat -->
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover mt-3">
+        <div class="table-responsive" style="overflow-x:auto;">
+            <table class="table table-bordered table-hover mt-3" style="min-width: 1200px;">
                 <thead class="text-white" style="background: linear-gradient(135deg, #667eea, #764ba2);">
                     <tr>
                         <th>No</th>
                         <th>Nama</th>
+                        <th>NRP</th>
                         <th>Jenis Surat</th>
                         <th>Tanggal Pengajuan</th>
                         <th>Status</th>
@@ -62,16 +63,15 @@
                     @forelse ($surats as $surat)
                         <tr class="align-middle">
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $surat->jenisSurat->nama_jenis ?? '-' }}</td>
-                            <td>{{ $surat->nama }}</td>
+                            <td>{{ $surat->nama ?? '-' }}</td>
                             <td>{{ $surat->mahasiswa->nrp ?? '-' }}</td>
+                            <td>{{ $surat->jenisSurat->nama_jenis ?? '-' }}</td>
                             <td>{{ $surat->created_at->format('d-m-Y H:i') }}</td>
                             <td>
-                                <span
-                                    class="badge
-                                @if ($surat->suratDetail->status == 'terima') bg-success 
-                                @elseif($surat->suratDetail->status == 'ditolak') bg-danger 
-                                @else bg-secondary @endif">
+                                <span class="badge
+                                    @if ($surat->suratDetail->status == 'terima') bg-success 
+                                    @elseif($surat->suratDetail->status == 'ditolak') bg-danger 
+                                    @else bg-secondary @endif">
                                     @if ($surat->suratDetail->status == 'terima')
                                         Disetujui
                                     @elseif ($surat->suratDetail->status == 'ditolak')
@@ -94,8 +94,7 @@
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title" id="alasanModalLabel{{ $surat->id }}">Alasan
-                                                        Penolakan</h5>
+                                                    <h5 class="modal-title" id="alasanModalLabel{{ $surat->id }}">Alasan Penolakan</h5>
                                                     <button type="button" class="btn-close bg-white"
                                                         data-bs-dismiss="modal" aria-label="Tutup"></button>
                                                 </div>
@@ -113,11 +112,12 @@
                                     -
                                 @endif
                             </td>
-
+                            <td>{{ $surat->suratDetail->disetujui_oleh ?? '-' }}</td>
+                            <td>{{ $surat->suratDetail->diproses_oleh ?? '-' }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-white">Tidak ada surat yang sudah diproses.</td>
+                            <td colspan="9" class="text-center text-black">Tidak ada surat yang sudah diproses.</td>
                         </tr>
                     @endforelse
                 </tbody>
