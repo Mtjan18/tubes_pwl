@@ -14,20 +14,19 @@ class AdminSeeder extends Seeder
 {
     public function run()
     {
-        
-        Karyawan::create([
-            'user_id' => '103', // Menggunakan ID yang baru dibuat
-            'nip'     => '7200032',
-        ]);
 
         // Insert data ke users menggunakan Eloquent
-        User::create([
-            'id'       => '103',
-            'nama'     => 'Anonymouse',
-            'email'    => 'admin@example.com',
+        $user = User::create([
+            'nama'     => 'Admin',
+            'email'    => 'Admin@example.com',
             'password' => Hash::make('12345'),
             'role_id'  => 4,
         ]);
-        
+
+        // Insert data ke karyawan
+        Karyawan::create([
+            'nip'     => '7200032',
+            'user_id' => $user->id, // Hubungkan dengan user
+        ]);
     }
 }

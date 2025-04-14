@@ -9,20 +9,16 @@ use Illuminate\Support\Facades\Auth;
 
 class admin
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) { // buat cek udh login atau belum
-            return redirect('/login');
+            return redirect('/login/pegawai');
         }
-        if (Auth::user()->role !== 'admin') {
-            return redirect('/unauthenticated')->header('role', Auth::user()->role);
-        } else {
-            return $next($request);
-        }
+        if (Auth::user()->role->role_name !== 'admin') {
+            return redirect('/unauthenticated');
+        } 
+        
+        return $next($request);
+        
     }
 }

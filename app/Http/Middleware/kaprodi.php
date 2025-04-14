@@ -13,9 +13,7 @@ class Kaprodi
     {
         if (!Auth::check()) {
             return redirect('/login/pegawai');
-        }
-        
-        // Periksa role_name dari relasi role
+        }      
         if (Auth::user()->role->role_name !== 'ketua_prodi') {
             return redirect('/unauthenticated');
         }

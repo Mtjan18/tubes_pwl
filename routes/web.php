@@ -10,6 +10,7 @@ use App\Http\Controllers\SuratDetailController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KaprodiController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,7 +32,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // ========================
 // MAHASISWA ROUTES
 // ========================
-Route::middleware(['auth','student'])->prefix('mahasiswa')->group(function () {
+Route::middleware(['auth', 'student'])->prefix('mahasiswa')->group(function () {
     Route::get('/dashboard', function () {
         return view('DashboardMahasiswa');
     })->name('dashboard.mahasiswa');
@@ -50,7 +51,7 @@ Route::middleware(['auth','student'])->prefix('mahasiswa')->group(function () {
 // ========================
 // KARYAWAN ROUTES
 // ========================
-Route::middleware(['auth','staff'])->prefix('karyawan')->group(function () {
+Route::middleware(['auth', 'staff'])->prefix('karyawan')->group(function () {
     Route::get('/dashboard', [KaryawanController::class, 'index'])->name('karyawan.dashboard');
     Route::post('/validasi-surat/{id}', [KaryawanController::class, 'validasiSurat'])->name('karyawan.validasiSurat');
     Route::get('/daftar-surat', [KaryawanController::class, 'daftarSurat'])->name('karyawan.daftarSurat');
@@ -59,11 +60,26 @@ Route::middleware(['auth','staff'])->prefix('karyawan')->group(function () {
 // ========================
 // KAPRODI ROUTES
 // ========================
-Route::middleware(['auth','kaprodi'])->prefix('kaprodi')->group(function () {
+Route::middleware(['auth', 'kaprodi'])->prefix('kaprodi')->group(function () {
     Route::get('/dashboard', [KaprodiController::class, 'index'])->name('kaprodi.dashboard');
     Route::post('/validasi-surat/{id}', [KaprodiController::class, 'validasiSurat'])->name('kaprodi.validasiSurat');
     Route::get('/daftar-surat', [KaprodiController::class, 'daftarSurat'])->name('kaprodi.daftarSurat');
 });
+
+// ========================
+// ADMIN ROUTES
+// ========================
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/DaftarMahasiswa', [AdminController::class, 'daftarMahasiswa'])->name('admin.daftar-mahasiswa');
+    Route::put('/update-mahasiswa/{nrp}', [AdminController::class, 'updateMahasiswa'])->name('admin.update-mahasiswa');
+
+    Route::get('/DaftarKaryawan', [AdminController::class, 'daftarKaryawan'])->name('admin.daftar-karyawan');
+    Route::put('/update-karyawan/{nip}', [AdminController::class, 'updateKaryawan'])->name('admin.update-karyawan');
+});
+
+
+
 
 // ========================
 // SURAT DETAIL & SETTINGS

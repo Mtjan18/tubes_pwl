@@ -66,6 +66,8 @@ class LoginController extends Controller
             return redirect()->route('kaprodi.dashboard');
         } elseif ($user->role->role_name === 'karyawan') {
             return redirect()->route('karyawan.dashboard');
+        } elseif ($user->role->role_name === 'admin') {
+            return redirect()->route('admin.dashboard'); 
         } else {
             Auth::logout();
             return redirect()->back()->withErrors(['nip' => 'Role tidak valid untuk login.']);
