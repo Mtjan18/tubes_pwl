@@ -52,9 +52,8 @@ Route::middleware(['auth', 'student'])->prefix('mahasiswa')->group(function () {
 // KARYAWAN ROUTES
 // ========================
 Route::middleware(['auth', 'staff'])->prefix('karyawan')->group(function () {
-    Route::get('/dashboard', [KaryawanController::class, 'index'])->name('karyawan.dashboard');
-    Route::post('/validasi-surat/{id}', [KaryawanController::class, 'validasiSurat'])->name('karyawan.validasiSurat');
-    Route::get('/daftar-surat', [KaryawanController::class, 'daftarSurat'])->name('karyawan.daftarSurat');
+    Route::get('/dashboard/karyawan', [KaryawanController::class, 'index'])->name('karyawan.dashboard');
+    Route::post('/dashboard/karyawan/upload/{id}', [KaryawanController::class, 'upload'])->name('karyawan.upload');
 });
 
 // ========================
@@ -71,12 +70,21 @@ Route::middleware(['auth', 'kaprodi'])->prefix('kaprodi')->group(function () {
 // ========================
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::get('/DaftarMahasiswa', [AdminController::class, 'daftarMahasiswa'])->name('admin.daftar-mahasiswa');
+
+    // Daftar Mahasiswa
+    Route::get('/daftar-mahasiswa', [AdminController::class, 'daftarMahasiswa'])->name('admin.daftar-mahasiswa');
+    Route::post('/store-mahasiswa', [AdminController::class, 'storeMahasiswa'])->name('admin.store-mahasiswa');
     Route::put('/update-mahasiswa/{nrp}', [AdminController::class, 'updateMahasiswa'])->name('admin.update-mahasiswa');
 
-    Route::get('/DaftarKaryawan', [AdminController::class, 'daftarKaryawan'])->name('admin.daftar-karyawan');
+    // Daftar Karyawan & Kaprodi
+    Route::get('/daftar-karyawan', [AdminController::class, 'daftarKaryawan'])->name('admin.daftar-karyawan');
+    Route::post('/store-karyawan', [AdminController::class, 'storeKaryawan'])->name('admin.store-karyawan');
     Route::put('/update-karyawan/{nip}', [AdminController::class, 'updateKaryawan'])->name('admin.update-karyawan');
+
+    // Halaman gabungan mahasiswa dan karyawan (jika ada fitur tersebut)
+    Route::get('/daftar-mahasiswa-karyawan', [AdminController::class, 'showMahasiswaKaryawan'])->name('admin.daftar-mahasiswa-karyawan');
 });
+
 
 
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,11 +17,18 @@ class Karyawan extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'user_id', 'nip','program_studi_id',
+        'user_id',
+        'nip',
+        'program_studi_id',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function programStudi()
+    {
+        return $this->belongsTo(ProgramStudi::class, 'program_studi_id', 'id_program_studi');
     }
 }

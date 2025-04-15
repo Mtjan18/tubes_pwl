@@ -1,98 +1,37 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Support\Facades\Auth;
 
-use App\Models\Surat;
 use Illuminate\Http\Request;
-use App\Models\JenisSurat;
 use App\Models\SuratDetail;
-
+use Illuminate\Support\Facades\Storage;
 
 class KaryawanController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $jenisSurats = JenisSurat::all();
-
-        $query = Surat::with(['mahasiswa', 'jenisSurat', 'suratDetail'])
-            ->whereHas('suratDetail', function ($q) {
-                $q->where('status', 'diproses');
-            });
-
-        $surats = Surat::with(['jenisSurat', 'mahasiswa', 'suratDetail'])
-            ->when($request->jenis_surat, function ($query) use ($request) {
-                $query->where('jenis_surat_id', $request->jenis_surat);
-            })
-            ->orderBy('created_at', 'asc')
+        $suratDisetujui = SuratDetail::with(['surat.jenisSurat', 'surat.user'])
+            ->where('status', 'disetujui')
             ->get();
 
-
-        if ($request->filled('jenis_surat')) {
-            $query->where('jenis_surat_id', $request->jenis_surat);
-        }
-
-        $surats = $query->get();
-
-        return view('DashboardKaryawan', compact('surats', 'jenisSurats'));
+        return view('DashboardKaryawan', compact('suratDisetujui'));
     }
 
-
-    public function validasiSurat(Request $request, $id)
+    public function upload(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:terima,tolak',
-            'alasan' => 'nullable|string|max:255'
+            'file_pdf' => 'required|mimes:pdf|max:2048',
         ]);
 
-        $suratDetail = SuratDetail::where('surat_id', $id)->first();
+        $suratDetail = SuratDetail::findOrFail($id);
+        $path = $request->file('file_pdf')->store('pdf_surat');
 
-        if (!$suratDetail) {
-            return redirect()->route('karyawan.dashboard')->with('status', 'Data surat tidak ditemukan.');
-        }
-
-        // Mapping status yang dikirim dari form
-        $suratDetail->status = $request->status === 'tolak' ? 'ditolak' : 'disetujui';
-        $suratDetail->processed_by = Auth::id();
-
-        if ($request->status === 'tolak') {
-            $suratDetail->alasan_penolakan = $request->alasan ?? 'Tidak ada alasan yang diberikan';
-        } else {
-            $suratDetail->alasan_penolakan = null;
-        }
-
+        $suratDetail->file_path = $path;
+        $suratDetail->processed_by = Auth::user()->id;
         $suratDetail->save();
 
-        return redirect()->route('karyawan.dashboard')->with('status', 'Surat berhasil divalidasi.');
+        return back()->with('success', 'File berhasil diunggah.');
     }
-
-    public function daftarSurat(Request $request)
-    {
-        $surats = Surat::with(['jenisSurat', 'mahasiswa', 'suratDetail'])
-            ->whereHas('suratDetail', function ($query) {
-                $query->whereIn('status', ['disetujui', 'ditolak']);
-            })
-            ->when($request->jenis_surat, function ($query) use ($request) {
-                $query->where('jenis_surat_id', $request->jenis_surat);
-            })
-            ->when($request->status, function ($query) use ($request) {
-                $query->whereHas('suratDetail', function ($q) use ($request) {
-                    $q->where('status', $request->status);
-                });
-            })
-            ->when($request->nrp, function ($query) use ($request) {
-                $query->whereHas('mahasiswa', function ($q) use ($request) {
-                    $q->where('nrp', 'like', '%' . $request->nrp . '%');
-                });
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $jenisSurats = JenisSurat::all();
-
-        return view('karyawan.DaftarSurat', compact('surats', 'jenisSurats'));
-    }
-
-
 }
+

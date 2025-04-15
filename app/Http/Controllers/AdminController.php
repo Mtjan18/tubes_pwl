@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Karyawan;
 use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -18,46 +19,71 @@ class AdminController extends Controller
         return view('DashboardAdmin'); // Ganti dengan view yang sesuai
     }
 
-    // Halaman Daftar Mahasiswa
     public function daftarMahasiswa(Request $request)
     {
-        // Ambil data mahasiswa dengan relasi user dan program studi
-        $mahasiswa = Mahasiswa::with('user', 'programStudi')
-            ->when($request->has('filter'), function ($query) use ($request) {
-                return $query->whereHas('user', function ($query) use ($request) {
-                    $query->where('nama', 'like', '%' . $request->filter . '%');
-                });
-            })
-            ->get();
+        $query = Mahasiswa::query();
 
+        if ($request->has('filter') && $request->filter != '') {
+            $query->where('nrp', 'like', '%' . $request->filter . '%');
+        }
+
+        $mahasiswa = $query->with('user', 'programStudi')->get();
+
+        // $mahasiswa = Mahasiswa::with('user', 'programStudi')->get();
         $programStudi = ProgramStudi::all();
-        return view('admin.DaftarMahasiswa', compact('mahasiswa', 'programStudi'));
+
+        return view('admin.daftar-mahasiswa', compact('mahasiswa', 'programStudi'));
+    }
+
+    public function storeMahasiswa(Request $request)
+    {
+        $request->validate([
+            'nrp' => 'required|unique:mahasiswa,nrp',
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+            'program_studi_id' => 'required|exists:program_studi,id_program_studi',
+        ]);
+
+        $user = User::create([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role_id' => 1,
+        ]);
+
+        Mahasiswa::create([
+            'nrp' => $request->nrp,
+            'user_id' => $user->id,
+            'program_studi_id' => $request->program_studi_id,
+        ]);
+
+        return redirect()->route('admin.daftar-mahasiswa')->with('success', 'Mahasiswa berhasil diregistrasi.');
     }
 
 
-    // Fungsi Update Mahasiswa
+
     public function updateMahasiswa(Request $request, $nrp)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'program_studi_id' => 'required|exists:program_studi,id_program_studi',
+            'email' => 'required|email',
         ]);
 
-        $mahasiswa = Mahasiswa::with('user')->where('nrp', $nrp)->first();
-        $mahasiswa->user->update([
+        $mahasiswa = Mahasiswa::where('nrp', $nrp)->firstOrFail();
+        $user = $mahasiswa->user;
+
+        $user->update([
             'nama' => $request->nama,
             'email' => $request->email,
         ]);
 
-        $mahasiswa->update([
-            'program_studi_id' => $request->program_studi_id,
-        ]);
-
-        return back()->with('success', 'Data mahasiswa berhasil diperbarui.');
+        return redirect()->route('admin.daftar-mahasiswa')->with('success', 'Data mahasiswa berhasil diperbarui.');
     }
+
     public function daftarKaryawan(Request $request)
     {
+        // Ambil data karyawan beserta informasi user
         $karyawan = Karyawan::with('user')
             ->when($request->has('filter'), function ($query) use ($request) {
                 return $query->whereHas('user', function ($q) use ($request) {
@@ -75,8 +101,13 @@ class AdminController extends Controller
             })
             ->get();
 
-        return view('admin.daftarkaryawan', compact('karyawan'));
+        $programStudi = ProgramStudi::all();
+
+
+        // Pass data ke view
+        return view('admin.daftar-karyawan', compact('karyawan', 'programStudi'));
     }
+
 
     public function updateKaryawan(Request $request, $nip)
     {
@@ -92,5 +123,37 @@ class AdminController extends Controller
         ]);
 
         return back()->with('success', 'Data karyawan berhasil diperbarui.');
+    }
+
+    public function storeKaryawan(Request $request)
+    {
+        // Validasi inputan
+        $validated = $request->validate([
+            'nip' => 'required|unique:karyawan,nip|max:255',
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+            'role' => 'required|in:karyawan,kaprodi',
+            'program_studi_id' => 'required_if:role,kaprodi|nullable|exists:program_studi,id_program_studi',
+        ]);
+
+        // Menyimpan data ke tabel users
+        $user = User::create([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'password' => Hash::make($request->password), // Menggunakan password dari input form
+            'role_id' => $request->role == 'karyawan' ? 2 : 3, // Tambahan: jika role_id digunakan
+        ]);
+
+
+        // Menyimpan data karyawan
+        Karyawan::create([
+            'nip' => $request->nip,
+            'user_id' => $user->id,
+            'program_studi_id' => $request->role == 'kaprodi' ? $request->program_studi_id : null,
+        ]);
+
+
+        return redirect()->route('admin.daftar-karyawan')->with('success', 'Karyawan/Kaprodi berhasil ditambahkan');
     }
 }

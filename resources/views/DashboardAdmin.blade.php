@@ -5,5 +5,6 @@
 @endsection
 
 @section('content')
-    <h1>Dashboard Mahasiswa</h1>
+    <h1>Dashboard Admin</h1>
 @endsection
+    
