@@ -82,28 +82,38 @@
       width: 100%;
     }
 
-    /* Efek Hover */
     .btn-custom:hover, .btn-back:hover {
-      background: #db57f5d8; 
+      background: #db57f5d8;
       color: white;
     }
 
+    /* Alert */
+    .alert-danger {
+      background-color: rgba(255, 0, 0, 0.7);
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
     <h4>Pegawai</h4>
-    <br>
-    <br>
+    <br><br>
     <p>Masuk untuk memproses dan mengelola surat pengajuan mahasiswa.</p>
-    
+
+    {{-- Notifikasi error jika login gagal --}}
     @if (session('error'))
       <div class="alert alert-danger">
         {{ session('error') }}
       </div>
     @endif
-    
+
     <form method="POST" action="{{ url('/login/pegawai') }}">
       @csrf
       <div class="form-group">

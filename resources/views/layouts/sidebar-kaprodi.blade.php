@@ -15,8 +15,7 @@
             <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="{{ route('kaprodi.daftarSurat') }}">Daftar Surat</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="#">Riwayat Surat</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="#">Detail Surat</a></li>
+
                 </ul>
             </div>
     </ul>

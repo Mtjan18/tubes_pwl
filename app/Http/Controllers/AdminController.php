@@ -66,6 +66,7 @@ class AdminController extends Controller
     public function updateMahasiswa(Request $request, $nrp)
     {
         $request->validate([
+            'nrp' => 'required|string|max:255|unique:mahasiswa,nrp,' . $nrp . ',nrp',
             'nama' => 'required|string|max:255',
             'email' => 'required|email',
         ]);
@@ -73,13 +74,22 @@ class AdminController extends Controller
         $mahasiswa = Mahasiswa::where('nrp', $nrp)->firstOrFail();
         $user = $mahasiswa->user;
 
+        // Update user info
         $user->update([
             'nama' => $request->nama,
             'email' => $request->email,
         ]);
 
+        // Update NRP jika berbeda
+        if ($request->nrp !== $mahasiswa->nrp) {
+            $mahasiswa->update([
+                'nrp' => $request->nrp,
+            ]);
+        }
+
         return redirect()->route('admin.daftar-mahasiswa')->with('success', 'Data mahasiswa berhasil diperbarui.');
     }
+
 
     public function daftarKaryawan(Request $request)
     {
@@ -112,11 +122,15 @@ class AdminController extends Controller
     public function updateKaryawan(Request $request, $nip)
     {
         $request->validate([
+            'nip' => 'required|unique:karyawans,nip,' . $nip . '|max:20',  // Validasi NIP
             'nama' => 'required|string|max:255',
             'email' => 'required|email|max:255',
         ]);
 
         $karyawan = Karyawan::with('user')->where('nip', $nip)->first();
+        $karyawan->update([
+            'nip' => $request->nip, // Update NIP
+        ]);
         $karyawan->user->update([
             'nama' => $request->nama,
             'email' => $request->email,
@@ -124,6 +138,7 @@ class AdminController extends Controller
 
         return back()->with('success', 'Data karyawan berhasil diperbarui.');
     }
+
 
     public function storeKaryawan(Request $request)
     {

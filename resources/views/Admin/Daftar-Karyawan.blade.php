@@ -43,7 +43,7 @@
                     <th style="padding: 12px;">Aksi</th>
                 </tr>
             </thead>
-            
+
             <tbody>
                 @foreach ($karyawan as $kar)
                     <tr style="background-color: #f9f9fc;">
@@ -56,7 +56,7 @@
                         <td style="vertical-align: middle;">
                             {{ $kar->programStudi->nama_program_studi ?? '-' }}
                         </td>
-            
+
                         <td style="vertical-align: middle;">
                             <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
                                 data-bs-target="#editKaryawan{{ $kar->nip }}">
@@ -77,11 +77,19 @@
                                                     aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
+                                                <!-- NIP -->
+                                                <div class="mb-3">
+                                                    <label for="nip" class="form-label">NIP</label>
+                                                    <input type="text" name="nip" class="form-control"
+                                                        value="{{ $kar->nip }}" required>
+                                                </div>
+                                                <!-- Nama -->
                                                 <div class="mb-3">
                                                     <label for="nama" class="form-label">Nama</label>
                                                     <input type="text" name="nama" class="form-control"
                                                         value="{{ $kar->user->nama }}" required>
                                                 </div>
+                                                <!-- Email -->
                                                 <div class="mb-3">
                                                     <label for="email" class="form-label">Email</label>
                                                     <input type="email" name="email" class="form-control"
@@ -98,6 +106,7 @@
                                 </div>
                             </div>
                             <!-- End Modal -->
+
                         </td>
                     </tr>
                 @endforeach
@@ -113,7 +122,8 @@
                     <div class="modal-content">
                         <div class="modal-header" style="background-color: #764ba2; color: white;">
                             <h5 class="modal-title" id="registrasiModalLabel">Registrasi Karyawan / Kaprodi</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
@@ -144,13 +154,14 @@
                                 <label for="program_studi_id" class="form-label">Program Studi</label>
                                 <select name="program_studi_id" id="program_studi_id" class="form-select">
                                     <option value="">-- Pilih Program Studi --</option>
-                                    <option value="-">-</option> 
+                                    <option value="-">-</option>
                                     @foreach ($programStudi as $prodi)
-                                        <option value="{{ $prodi->id_program_studi }}">{{ $prodi->nama_program_studi }}</option>
+                                        <option value="{{ $prodi->id_program_studi }}">{{ $prodi->nama_program_studi }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
-                            
+
 
                         </div>
                         <div class="modal-footer">

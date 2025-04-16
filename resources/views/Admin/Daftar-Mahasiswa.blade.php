@@ -63,6 +63,11 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="mb-3">
+                                                    <label for="nrp" class="form-label">NRP</label>
+                                                    <input type="text" name="nrp" class="form-control"
+                                                        value="{{ $mhs->nrp }}" required>
+                                                </div>
+                                                <div class="mb-3">
                                                     <label for="nama" class="form-label">Nama</label>
                                                     <input type="text" name="nama" class="form-control"
                                                         value="{{ $mhs->user->nama }}" required>
@@ -82,6 +87,8 @@
                                     </form>
                                 </div>
                             </div>
+                            <!-- End Modal -->
+
                             <!-- End Modal -->
                         </td>
                     </tr>

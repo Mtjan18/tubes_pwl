@@ -24,7 +24,7 @@
                                 <th>Disetujui Oleh</th>
                                 <th>Diproses Oleh</th>
                                 <th>File PDF</th>
-
+                                <th>Aksi</th> <!-- Kolom untuk tombol aksi -->
                             </tr>
                         </thead>
                         <tbody>
@@ -49,38 +49,12 @@
                                                 data-bs-target="#alasanModal{{ $detail->id }}">
                                                 Lihat Alasan
                                             </button>
-
-
-                                            <!-- Modal Versi Bootstrap 4 -->
-                                            <div class="modal fade" id="alasanModal{{ $detail->id }}" tabindex="-1"
-                                                aria-labelledby="alasanModalLabel{{ $detail->id }}" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header bg-danger text-white">
-                                                            <h5 class="modal-title"
-                                                                id="alasanModalLabel{{ $detail->id }}">Alasan
-                                                                Penolakan</h5>
-                                                            <button type="button" class="btn-close bg-white"
-                                                                data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                                        </div>
-                                                        <div class="modal-body text-dark">
-                                                            {{ $detail->alasan_penolakan ?? 'Tidak ada alasan yang diberikan.' }}
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Tutup</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         @else
                                             -
                                         @endif
                                     </td>
-
                                     <td>{{ $detail->nama_kaprodi ?? '-' }}</td>
                                     <td>{{ $detail->nama_karyawan ?? '-' }}</td>
-                                    
                                     <td>
                                         @if ($detail->file_path)
                                             <a href="{{ asset('storage/' . $detail->file_path) }}"
@@ -91,7 +65,19 @@
                                             -
                                         @endif
                                     </td>
-
+                                    <td>
+                                        @if ($detail->status == 'diproses')
+                                            <form action="{{ route('suratDetail.destroy', $detail->id) }}" method="POST"
+                                                style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus surat ini?')">Hapus</button>
+                                            </form>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

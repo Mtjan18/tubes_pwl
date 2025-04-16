@@ -46,6 +46,7 @@ Route::middleware(['auth', 'student'])->prefix('mahasiswa')->group(function () {
     Route::post('/surat/laporan-studi/store', [LaporanStudiController::class, 'store'])->name('surat.laporan-studi.store');
     Route::post('/surat/pengantar-tugas/store', [SuratPengantarTugasController::class, 'store'])->name('surat.pengantar-tugas.store');
     Route::post('/surat/lulus/store', [MhsLulusController::class, 'store'])->name('surat.lulus.store');
+    Route::resource('suratDetail', SuratDetailController::class);
 });
 
 // ========================

@@ -35,13 +35,13 @@
     h4 {
       font-size: 1.8rem;
       font-weight: 700;
-      color: white
+      color: white;
     }
 
     p {
       font-size: 1.2rem;
       opacity: 0.85;
-      color: white
+      color: white;
     }
 
     .form-group {
@@ -69,8 +69,8 @@
       color: rgba(255, 255, 255, 0.8);
     }
 
-    /* Tombol Login & Back */
-    .btn-custom, .btn-back {
+    .btn-custom,
+    .btn-back {
       background: #ffcc00;
       color: #141e30;
       font-weight: bold;
@@ -82,12 +82,20 @@
       width: 100%;
     }
 
-    /* Efek Hover */
-    .btn-custom:hover, .btn-back:hover {
-      background: #db57f5d8; 
+    .btn-custom:hover,
+    .btn-back:hover {
+      background: #db57f5d8;
       color: white;
     }
 
+    /* Error message styling (oranye) */
+    .text-error {
+      color: #ffcc00;
+      font-size: 0.95rem;
+      text-align: left;
+      margin-top: 5px;
+      padding-left: 5px;
+    }
   </style>
 </head>
 
@@ -97,23 +105,31 @@
     <br>
     <br>
     <p>Silakan login untuk mengakses sistem pengajuan surat akademik.</p>
-    
+
     @if (session('error'))
       <div class="alert alert-danger">
         {{ session('error') }}
       </div>
     @endif
-    
+
     <form method="POST" action="{{ url('/login/mahasiswa') }}">
       @csrf
       <div class="form-group">
         <i class="fas fa-user form-icon"></i>
         <input type="text" class="form-control" id="nrp" name="nrp" placeholder="NRP" value="{{ old('nrp') }}" required autofocus>
+        @error('nrp')
+          <div class="text-error">{{ $message }}</div>
+        @enderror
       </div>
+
       <div class="form-group">
         <i class="fas fa-lock form-icon"></i>
         <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
       </div>
+      @error('password')
+        <div class="text-error">{{ $message }}</div>
+      @enderror
+
       <button type="submit" class="btn btn-custom btn-block">Login</button>
       <button type="button" class="btn-back btn-block mt-2" onclick="window.history.back();">Back</button>
     </form>
