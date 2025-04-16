@@ -32,5 +32,7 @@ class SuratDetailController extends Controller
 
 
         return view('Mahasiswa.SuratDetail', compact('suratDetails'));
+
+        
     }
 }

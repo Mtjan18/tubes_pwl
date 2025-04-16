@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Surat;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SuratDetail;
+use App\Models\Notification;
 
 
 class SuratPengantarTugasController extends Controller
@@ -39,6 +40,13 @@ class SuratPengantarTugasController extends Controller
             'surat_id' => $surat->id,
             'status' => 'diproses',
         ]);
+
+        Notification::create([
+            'user_id' => Auth::id(),      // mahasiswa yang mengajukan
+            'surat_id' => $surat->id,
+            'is_read' => false,
+        ]);
+        
 
 
         return redirect()->back()->with('success', 'Pengajuan Surat Pengantar Tugas berhasil dikirim.');

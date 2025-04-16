@@ -14,14 +14,23 @@ class SuratDetail extends Model
         'surat_id',
         'status',
         'alasan_penolakan',
+        'file_path',
         'approved_by',
         'processed_by'
     ];
+
 
     public function surat()
     {
         return $this->belongsTo(Surat::class, 'surat_id');
     }
+
+
+    public function kaprodi()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
 
     public function approvedBy()
     {
@@ -31,5 +40,10 @@ class SuratDetail extends Model
     public function processedBy()
     {
         return $this->belongsTo(User::class, 'processed_by');
+    }
+
+    public function mahasiswa()
+    {
+        return $this->belongsTo(Mahasiswa::class, 'mahasiswa_id');
     }
 }

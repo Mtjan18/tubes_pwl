@@ -8,6 +8,7 @@ use App\Models\Surat;
 use Illuminate\Support\Facades\DB;
 use App\Models\JenisSurat;
 use App\Models\SuratDetail;
+use App\Models\Notification;
 
 class MhsAktifController extends Controller
 {
@@ -34,6 +35,13 @@ class MhsAktifController extends Controller
             'surat_id' => $surat->id,
             'status' => 'diproses',
         ]);
+
+        Notification::create([
+            'user_id' => Auth::id(),      // mahasiswa yang mengajukan
+            'surat_id' => $surat->id,
+            'is_read' => false,
+        ]);
+        
 
         return redirect()->back()->with('success', 'Surat berhasil diajukan.');
     }

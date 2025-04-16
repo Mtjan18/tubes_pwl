@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('navbar')
+    @include('layouts.navbar-kaprodi')
+@endsection
+
 @section('sidebar')
     @include('layouts.sidebar-kaprodi')
 @endsection
@@ -125,7 +129,6 @@
                                 @if ($surat->suratDetail->status == 'diproses')
                                     <form method="POST" action="{{ route('kaprodi.validasiSurat', $surat->id) }}">
                                         @csrf
-                                        @method('PUT')
                                         <button type="submit" name="status" value="terima"
                                             class="btn btn-success btn-sm">Setujui</button>
                                         <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
@@ -138,8 +141,7 @@
                                         <div class="modal-dialog">
                                             <form method="POST" action="{{ route('kaprodi.validasiSurat', $surat->id) }}">
                                                 @csrf
-                                                @method('PUT')
-                                                <input type="hidden" name="status" value="ditolak">
+                                                <input type="hidden" name="status" value="tolak">
                                                 <div class="modal-content">
                                                     <div class="modal-header bg-danger text-white">
                                                         <h5 class="modal-title" id="tolakModalLabel{{ $surat->id }}">
@@ -148,7 +150,7 @@
                                                             aria-label="Tutup"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <textarea name="alasan_penolakan" class="form-control" rows="3" placeholder="Masukkan alasan penolakan" required></textarea>
+                                                        <textarea name="alasan" class="form-control" rows="3" placeholder="Masukkan alasan penolakan" required></textarea>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="submit" class="btn btn-danger">Kirim

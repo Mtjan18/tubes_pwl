@@ -7,7 +7,7 @@
 
 <body>
     <div class="container-scroller">
-        @include('layouts.navbar')
+        @yield('navbar', View::make('layouts.navbar'))
         <div class="container-fluid page-body-wrapper">
             @yield('sidebar', View::make('layouts.sidebar'))
             <div class="main-panel">

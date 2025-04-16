@@ -9,6 +9,9 @@
             <span class="icon-menu"></span>
         </button>
         <ul class="navbar-nav navbar-nav-right">
+                     
+            
+            <!-- Profile Dropdown -->
             <li class="nav-item nav-profile dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-toggle="dropdown"
                     id="profileDropdown">
@@ -16,7 +19,6 @@
                     <img src="{{ asset('images/faces/face28.jpg') }}" alt="profile"
                         style="width: 32px; height: 32px; border-radius: 50%;">
                 </a>
-
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
                     <a class="dropdown-item" href="">
                         <i class="ti-settings text-primary"></i>
@@ -32,14 +34,17 @@
                 </div>
             </li>
 
-            <li class="nav-item nav-settings d-none d-lg-flex">
+            
+
+            <!-- Notifikasi Lonceng -->
+            <li class="nav-item nav-settings">
                 <a class="nav-link" href="#">
-                    <i class="icon-ellipsis"></i>
+                    <i class="icon-bell mx-0"></i> 
+                    @if ($unreadNotifications > 0)
+                        <span class="badge badge-danger">{{ $unreadNotifications }}</span>
+                    @endif
                 </a>
-            </li>
+            </li>   
         </ul>
-        {{-- <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-      <span class="icon-menu"></span>
-    </button> --}}
     </div>
 </nav>

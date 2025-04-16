@@ -23,6 +23,8 @@
                                 <th>Alasan Penolakan</th>
                                 <th>Disetujui Oleh</th>
                                 <th>Diproses Oleh</th>
+                                <th>File PDF</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -78,6 +80,18 @@
 
                                     <td>{{ $detail->nama_kaprodi ?? '-' }}</td>
                                     <td>{{ $detail->nama_karyawan ?? '-' }}</td>
+                                    
+                                    <td>
+                                        @if ($detail->file_path)
+                                            <a href="{{ asset('storage/' . $detail->file_path) }}"
+                                                class="btn btn-sm btn-primary" target="_blank">
+                                                Download
+                                            </a>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+
                                 </tr>
                             @endforeach
                         </tbody>
@@ -113,6 +127,5 @@
             padding: 8px 12px;
             border-radius: 8px;
         }
-
     </style>
 @endsection

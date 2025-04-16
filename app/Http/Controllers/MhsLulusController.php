@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Surat;
 use App\Models\SuratDetail;
+use App\Models\Notification;
 
 
 class MhsLulusController extends Controller
@@ -30,6 +31,13 @@ class MhsLulusController extends Controller
             'surat_id' => $surat->id,
             'status' => 'diproses',
         ]);
+
+        Notification::create([
+            'user_id' => Auth::id(),      // mahasiswa yang mengajukan
+            'surat_id' => $surat->id,
+            'is_read' => false,
+        ]);
+        
 
         return redirect()->back()->with('success', 'Surat Keterangan Lulus berhasil diajukan.');
     }

@@ -37,7 +37,7 @@ class LoginController extends Controller
                 ->withErrors(['nrp' => 'NRP atau password salah.']);
         }
 
-        return redirect()->route('dashboard.mahasiswa');// Redirect ke halaman mahasiswa
+        return redirect()->route('Mahasiswa.FormSurat');// Redirect ke halaman mahasiswa
     }
 
     public function pegawaiLogin(Request $request)

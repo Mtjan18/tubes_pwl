@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Surat;
 use App\Models\SuratDetail;
+use App\Models\Notification;
 
 class LaporanStudiController extends Controller
 {
@@ -29,6 +30,13 @@ class LaporanStudiController extends Controller
             'surat_id' => $surat->id,
             'status' => 'diproses', // Status default saat surat diajukan
         ]);
+
+        Notification::create([
+            'user_id' => Auth::id(),      // mahasiswa yang mengajukan
+            'surat_id' => $surat->id,
+            'is_read' => false,
+        ]);
+        
 
         return redirect()->back()->with('success', 'Surat Laporan Hasil Studi berhasil diajukan.');
     }

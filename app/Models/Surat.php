@@ -35,10 +35,14 @@ class Surat extends Model
     {
         return $this->hasOne(SuratDetail::class, 'surat_id');
     }
-    
+
     public function mahasiswa()
     {
         return $this->belongsTo(Mahasiswa::class, 'user_id', 'user_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

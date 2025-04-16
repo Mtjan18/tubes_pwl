@@ -53,8 +53,11 @@ Route::middleware(['auth', 'student'])->prefix('mahasiswa')->group(function () {
 // ========================
 Route::middleware(['auth', 'staff'])->prefix('karyawan')->group(function () {
     Route::get('/dashboard/karyawan', [KaryawanController::class, 'index'])->name('karyawan.dashboard');
+    Route::get('/{prodi}', [KaryawanController::class, 'byProdi'])->name('karyawan.byProdi');
     Route::post('/dashboard/karyawan/upload/{id}', [KaryawanController::class, 'upload'])->name('karyawan.upload');
+    Route::redirect('/karyawan/dashboard/karyawan', '/karyawan/TI');
 });
+
 
 // ========================
 // KAPRODI ROUTES
@@ -62,6 +65,7 @@ Route::middleware(['auth', 'staff'])->prefix('karyawan')->group(function () {
 Route::middleware(['auth', 'kaprodi'])->prefix('kaprodi')->group(function () {
     Route::get('/dashboard', [KaprodiController::class, 'index'])->name('kaprodi.dashboard');
     Route::post('/validasi-surat/{id}', [KaprodiController::class, 'validasiSurat'])->name('kaprodi.validasiSurat');
+    
     Route::get('/daftar-surat', [KaprodiController::class, 'daftarSurat'])->name('kaprodi.daftarSurat');
 });
 

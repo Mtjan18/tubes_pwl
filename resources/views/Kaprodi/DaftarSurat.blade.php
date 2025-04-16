@@ -69,10 +69,10 @@
                             <td>{{ $surat->created_at->format('d-m-Y H:i') }}</td>
                             <td>
                                 <span class="badge
-                                    @if ($surat->suratDetail->status == 'terima') bg-success 
+                                    @if ($surat->suratDetail->status == 'disetujui') bg-success 
                                     @elseif($surat->suratDetail->status == 'ditolak') bg-danger 
                                     @else bg-secondary @endif">
-                                    @if ($surat->suratDetail->status == 'terima')
+                                    @if ($surat->suratDetail->status == 'disetujui')
                                         Disetujui
                                     @elseif ($surat->suratDetail->status == 'ditolak')
                                         Ditolak
@@ -112,7 +112,7 @@
                                     -
                                 @endif
                             </td>
-                            <td>{{ $surat->suratDetail->disetujui_oleh ?? '-' }}</td>
+                            <td>{{ $surat->suratDetail->kaprodi->nama ?? '-' }}</td>
                             <td>{{ $surat->suratDetail->diproses_oleh ?? '-' }}</td>
                         </tr>
                     @empty

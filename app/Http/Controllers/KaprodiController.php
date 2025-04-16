@@ -8,6 +8,7 @@ use App\Models\Surat;
 use Illuminate\Http\Request;
 use App\Models\JenisSurat;
 use App\Models\SuratDetail;
+use App\Models\Notification;
 
 class KaprodiController extends Controller
 {
@@ -15,11 +16,18 @@ class KaprodiController extends Controller
     {
         $jenisSurats = JenisSurat::all();
 
+        $user = Auth::user();
+        $programStudiKaprodi = $user->karyawan->program_studi_id;
+
         $query = Surat::with(['mahasiswa', 'jenisSurat', 'suratDetail'])
             ->whereHas('suratDetail', function ($q) {
-                $q->where('status', 'diproses'); 
+                $q->where('status', 'diproses');
+            })
+            ->whereHas('mahasiswa', function ($q) use ($programStudiKaprodi) {
+                $q->where('program_studi_id', $programStudiKaprodi);
             });
 
+        // filter tambahan
         if ($request->filled('jenis_surat')) {
             $query->where('jenis_surat_id', $request->jenis_surat);
         }
@@ -38,13 +46,17 @@ class KaprodiController extends Controller
 
         $surats = $query->get();
 
-        return view('DashboardKaprodi', compact('surats', 'jenisSurats'));
+        $unreadNotifications = Notification::where('is_read', false)->count();
+        return view('DashboardKaprodi', compact('surats', 'jenisSurats', 'unreadNotifications'));
     }
+
 
 
 
     public function validasiSurat(Request $request, $id)
     {
+        Notification::where('surat_id', $id)->update(['is_read' => true]);
+
         $request->validate([
             'status' => 'required|in:terima,tolak',
             'alasan' => 'nullable|string|max:255'
@@ -66,15 +78,22 @@ class KaprodiController extends Controller
         }
 
         $suratDetail->save();
+ 
 
         return redirect()->route('kaprodi.dashboard')->with('status', 'Surat berhasil divalidasi.');
     }
 
     public function daftarSurat(Request $request)
     {
-        $surats = Surat::with(['jenisSurat', 'mahasiswa', 'suratDetail'])
+        $user = Auth::user();
+        $programStudiKaprodi = $user->karyawan->program_studi_id;
+
+        $surats = Surat::with(['jenisSurat', 'mahasiswa', 'suratDetail.kaprodi'])
             ->whereHas('suratDetail', function ($query) {
                 $query->whereIn('status', ['disetujui', 'ditolak']);
+            })
+            ->whereHas('mahasiswa', function ($q) use ($programStudiKaprodi) {
+                $q->where('program_studi_id', $programStudiKaprodi);
             })
             ->when($request->jenis_surat, function ($query) use ($request) {
                 $query->where('jenis_surat_id', $request->jenis_surat);
